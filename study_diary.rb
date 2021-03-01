@@ -51,7 +51,7 @@ def search_item(collection)
         item.title.include? term
     end
     print_item(found_items)
-    puts 'Nenhum item encontrado' if collection.empty?
+    #puts 'Nenhum item encontrado' if collection.empty?
 end
 
 clear
