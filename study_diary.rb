@@ -1,4 +1,5 @@
 require_relative './study_item.rb'
+require 'colorize'
 
 def clear
     system('clear')
@@ -30,7 +31,7 @@ def menu
     puts "[#{exibir}] Ver todos os itens cadastrados"
     puts "[#{concluir}] Concluir um item"
     puts "[#{buscar}] Buscar um item de estudo"
-    puts "[#{limpar}] Limpar Concluídos"
+    puts "[#{limpar}] Apagar Concluídos"
     puts "[#{sair}] Sair"
     print 'Escolha uma opção: '
     gets.to_i
@@ -47,7 +48,12 @@ end
 
 def print_item(collection)
     collection.each_with_index do |item, index|
-        puts "[#{item.done}] ##{index + 1} - #{item.title} - #{item.category}"
+        print_output = "[#{item.done}] ##{index + 1} - #{item.title} - #{item.category}"
+        if item.done == "v"
+            puts print_output.green
+        else
+            puts print_output.red
+        end
     end
     puts 'Nenhum item cadastrado' if collection.empty?
 end
@@ -65,14 +71,36 @@ def search_item(collection)
     end
 end
 
+def all_done?(collection)
+    term = "x"
+    items = collection.map do |item|
+        item.done.include? term
+    end
+    
+    if items.include? true
+        false
+    else
+        true
+    end
+end
+
 def check_done(collection)
-    puts "Qual item você concluiu?"
-    print_item(collection)
-    item = gets.chomp.to_i
-    collection[item-1].done= "v"
-    clear
-    puts "Parabéns, siga em frente com seus estudos!"
+    if collection.empty?
+        puts 'Nenhum item cadastrado'
+    else
+        if all_done?(collection)
+            puts "Você concluiu todos os itens!"
+        else
+            puts "Qual item você concluiu?"
+            print_item(collection)
+            item = gets.chomp.to_i
+            collection[item-1].done= "v"
+            clear        
+            puts "Parabéns, siga em frente com seus estudos!"
+        end
+    end
 end    
+
 
 
 clear
@@ -91,9 +119,9 @@ loop do
         check_done(study_items)   
     when 4 #Procura item
         search_item(study_items)
-    when 4 #Limpa concluidos
-        checkbox(study_items)
-    when 5 #Sair
+    when 5 #Limpa concluidos
+        check_done(study_items)
+    when 6 #Sair
         clear
         puts 'Obrigado por usar o Diário de Estudos'  
         break
