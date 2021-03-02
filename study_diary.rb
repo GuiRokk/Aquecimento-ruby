@@ -17,21 +17,21 @@ def wait_keypress_and_clear
 end
 
 def welcome
-    'Bem-vindo ao Diário de Estudos, seu companheiro para estudar!'
+    '<<< Bem-vindo ao Diário de Estudos, seu companheiro para estudar! >>>'
 end
   
 def menu
     cadastro = 1
-    exibir = 2
+    exibir =   2
     concluir = 3
-    buscar = 4
-    limpar = 5
-    sair = 6
+    buscar =   4
+    limpar =   5
+    sair =     6
     puts "[#{cadastro}] Cadastrar um item para estudar"
     puts "[#{exibir}] Ver todos os itens cadastrados"
     puts "[#{concluir}] Concluir um item"
     puts "[#{buscar}] Buscar um item de estudo"
-    puts "[#{limpar}] Apagar Concluídos"
+    puts "[#{limpar}] Apagar item"
     puts "[#{sair}] Sair"
     print 'Escolha uma opção: '
     gets.to_i
@@ -76,7 +76,6 @@ def all_done?(collection)
     items = collection.map do |item|
         item.done.include? term
     end
-    
     if items.include? true
         false
     else
@@ -101,6 +100,20 @@ def check_done(collection)
     end
 end    
 
+def delete_item(collection)
+    if collection.empty?
+        puts 'Nenhum item cadastrado'
+    else
+        puts "Qual item quer apagar?"
+        print_item(collection)
+        index = gets.chomp.to_i-1
+        deleted_item = "##{index+1} >> #{collection[index].title} - #{collection[index].category}"
+        clear
+        puts "Item #{deleted_item} deletado com sucesso..."
+        collection.delete_at(index)
+    end
+end
+
 
 
 clear
@@ -119,8 +132,8 @@ loop do
         check_done(study_items)   
     when 4 #Procura item
         search_item(study_items)
-    when 5 #Limpa concluidos
-        check_done(study_items)
+    when 5 #Limpa item
+        delete_item(study_items)
     when 6 #Sair
         clear
         puts 'Obrigado por usar o Diário de Estudos'  
