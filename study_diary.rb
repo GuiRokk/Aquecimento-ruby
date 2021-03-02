@@ -49,7 +49,7 @@ end
 def print_item(collection)
     collection.each_with_index do |item, index|
         print_output = "[#{item.done}] ##{index + 1} - #{item.title} - #{item.category}"
-        if item.done == "v"
+        if item.is_done?
             puts print_output.green
         else
             puts print_output.red
@@ -72,11 +72,10 @@ def search_item(collection)
 end
 
 def all_done?(collection)
-    term = "x"
     items = collection.map do |item|
-        item.done.include? term
+        item.is_done?
     end
-    if items.include? true
+    if items.include? false
         false
     else
         true
@@ -88,14 +87,21 @@ def check_done(collection)
         puts 'Nenhum item cadastrado'
     else
         if all_done?(collection)
-            puts "Você concluiu todos os itens!"
+            puts "Parabéns! Você concluiu todos os itens!"
         else
             puts "Qual item você concluiu?"
             print_item(collection)
-            item = gets.chomp.to_i
-            collection[item-1].done= "v"
-            clear        
-            puts "Parabéns, siga em frente com seus estudos!"
+            index = gets.chomp.to_i
+            if index == 0
+                clear
+                puts "Função Abortada" 
+            else
+                item = collection[index-1]
+                item.check_done
+                clear
+                puts "[#{item.done}] ##{index} - #{item.title} - #{item.category}".green
+                puts "Siga em frente com seus estudos!"
+            end             
         end
     end
 end    
@@ -106,15 +112,13 @@ def delete_item(collection)
     else
         puts "Qual item quer apagar?"
         print_item(collection)
-        index = gets.chomp.to_i-1
-        deleted_item = "##{index+1} >> #{collection[index].title} - #{collection[index].category}"
+        index = gets.chomp.to_i
+        deleted_item = "##{index} >> #{collection[index-1].title} - #{collection[index-1].category}"
         clear
-        puts "Item #{deleted_item} deletado com sucesso..."
+        puts "Item #{deleted_item} apagado com sucesso..."
         collection.delete_at(index)
     end
 end
-
-
 
 clear
 puts welcome
