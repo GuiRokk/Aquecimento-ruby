@@ -20,10 +20,18 @@ def welcome
 end
   
 def menu
-    puts "[1] Cadastrar um item para estudar"
-    puts "[2] Ver todos os itens cadastrados"
-    puts "[3] Buscar um item de estudo"
-    puts "[4] Sair"
+    cadastro = 1
+    exibir = 2
+    concluir = 3
+    buscar = 4
+    limpar = 5
+    sair = 6
+    puts "[#{cadastro}] Cadastrar um item para estudar"
+    puts "[#{exibir}] Ver todos os itens cadastrados"
+    puts "[#{concluir}] Concluir um item"
+    puts "[#{buscar}] Buscar um item de estudo"
+    puts "[#{limpar}] Limpar Concluídos"
+    puts "[#{sair}] Sair"
     print 'Escolha uma opção: '
     gets.to_i
 end
@@ -39,20 +47,33 @@ end
 
 def print_item(collection)
     collection.each_with_index do |item, index|
-        puts "##{index + 1} - #{item.title} - #{item.category}"
+        puts "[#{item.done}] ##{index + 1} - #{item.title} - #{item.category}"
     end
     puts 'Nenhum item cadastrado' if collection.empty?
 end
 
 def search_item(collection)
-    print 'Digite uma palavra para procurar: '
-    term = gets.chomp
-    found_items = collection.filter do |item|
-        item.title.include? term
+    if collection.empty?
+        puts 'Nenhum item cadastrado'
+    else
+        print 'Digite uma palavra para procurar: '
+        term = gets.chomp    
+        found_items = collection.filter do |item|
+            item.title.include? term or item.category.include? term
+        end
+        print_item(found_items)
     end
-    print_item(found_items)
-    #puts 'Nenhum item encontrado' if collection.empty?
 end
+
+def check_done(collection)
+    puts "Qual item você concluiu?"
+    print_item(collection)
+    item = gets.chomp.to_i
+    collection[item-1].done= "v"
+    clear
+    puts "Parabéns, siga em frente com seus estudos!"
+end    
+
 
 clear
 puts welcome
@@ -62,13 +83,17 @@ option = menu
 loop do
     clear
     case option
-    when 1
+    when 1 #adciona
         study_items << register_study_item
-    when 2
+    when 2 #exibe
         print_item(study_items)
-    when 3
+    when 3 #marca concluído
+        check_done(study_items)   
+    when 4 #Procura item
         search_item(study_items)
-    when 4
+    when 4 #Limpa concluidos
+        checkbox(study_items)
+    when 5 #Sair
         clear
         puts 'Obrigado por usar o Diário de Estudos'  
         break
