@@ -1,6 +1,14 @@
 require_relative './study_item.rb'
 require 'colorize'
 
+REGISTER = 1
+VIEW     = 2
+CHECKBOX = 3
+SEARCH   = 4
+ERASE    = 5
+EXIT     = 6
+
+
 def clear
     system('clear')
 end
@@ -21,18 +29,13 @@ def welcome
 end
   
 def menu
-    cadastro = 1
-    exibir =   2
-    concluir = 3
-    buscar =   4
-    limpar =   5
-    sair =     6
-    puts "[#{cadastro}] Cadastrar um item para estudar"
-    puts "[#{exibir}] Ver todos os itens cadastrados"
-    puts "[#{concluir}] Concluir um item"
-    puts "[#{buscar}] Buscar um item de estudo"
-    puts "[#{limpar}] Apagar item"
-    puts "[#{sair}] Sair"
+ 
+    puts "[#{REGISTER}] Cadastrar um item para estudar"
+    puts "[#{VIEW}] Ver todos os itens cadastrados"
+    puts "[#{CHECKBOX}] Concluir um item"
+    puts "[#{SEARCH}] Buscar um item de estudo"
+    puts "[#{ERASE}] Apagar item"
+    puts "[#{EXIT}] Sair"
     print 'Escolha uma opção: '
     gets.to_i
 end
