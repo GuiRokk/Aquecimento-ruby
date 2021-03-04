@@ -1,13 +1,11 @@
-require_relative './study_item.rb'
-require 'colorize'
+require_relative 'study_item'
 
 REGISTER = 1
 VIEW     = 2
 CHECKBOX = 3
 SEARCH   = 4
-ERASE    = 5
+DELETE   = 5
 EXIT     = 6
-
 
 def clear
     system('clear')
@@ -34,92 +32,50 @@ def menu
     puts "[#{VIEW}] Ver todos os itens cadastrados"
     puts "[#{CHECKBOX}] Concluir um item"
     puts "[#{SEARCH}] Buscar um item de estudo"
-    puts "[#{ERASE}] Apagar item"
+    puts "[#{DELETE}] Apagar item"
     puts "[#{EXIT}] Sair"
     print 'Escolha uma opção: '
     gets.to_i
 end
   
-def register_study_item
-    print 'Digite o título do seu item de estudo: '
-    title = gets.chomp
-    print 'Digite a categoria do seu item de estudo: '
-    category = gets.chomp
-    puts "Item '#{title}' da categoria '#{category}' cadastrado com sucesso!"
-    StudyItem.new(title, category)
-end
-
-def print_item(collection)
-    collection.each_with_index do |item, index|
-        print_output = "[#{item.done}] ##{index + 1} - #{item.title} - #{item.category}"
-        if item.is_done?
-            puts print_output.green
-        else
-            puts print_output.red
-        end
-    end
-    puts 'Nenhum item cadastrado' if collection.empty?
-end
 
 def search_item(collection)
-    if collection.empty?
+    if StudyItem.all.empty?
         puts 'Nenhum item cadastrado'
     else
-        print 'Digite uma palavra para procurar: '
+        puts 'Digite uma palavra para procurar: '
         term = gets.chomp    
-        found_items = collection.filter do |item|
-            item.title.include? term or item.category.include? term
+        found_items = StudyItem.all.filter do |item|
+            item.include?(term)
         end
         print_item(found_items)
     end
 end
 
-def all_done?(collection)
-    items = collection.map do |item|
-        item.is_done?
-    end
-    if items.include? false
-        false
-    else
-        true
-    end
-end
 
-def check_done(collection)
-    if collection.empty?
-        puts 'Nenhum item cadastrado'
-    else
-        if all_done?(collection)
-            puts "Parabéns! Você concluiu todos os itens!"
-        else
-            puts "Qual item você concluiu?"
-            print_item(collection)
-            index = gets.chomp.to_i
-            if index == 0
-                clear
-                puts "Função Abortada" 
-            else
-                item = collection[index-1]
-                item.check_done
-                clear
-                puts "[#{item.done}] ##{index} - #{item.title} - #{item.category}".green
-                puts "Siga em frente com seus estudos!"
-            end             
-        end
-    end
-end    
 
+#BUGADO
 def delete_item(collection)
-    if collection.empty?
+    if StudyItem.all.empty?
         puts 'Nenhum item cadastrado'
     else
         puts "Qual item quer apagar?"
         print_item(collection)
         index = gets.chomp.to_i
-        deleted_item = "##{index} >> #{collection[index-1].title} - #{collection[index-1].category}"
-        clear
+        item = collection[index-1]
+        deleted_item = "##{item.id} >> #{item.title} - #{item.category}"
+        p collection
+        #clear
         puts "Item #{deleted_item} apagado com sucesso..."
-        collection.delete_at(index)
+        collection.delete_at(item.id)
+    
+    #detect/find
+
+    #study_item =  StudyItem.all.find do |item|
+    #    study_item.id == id
+    #end
+    #StudyItem.all.delete(study_item)
+    
     end
 end
 
@@ -127,21 +83,21 @@ clear
 puts welcome
 study_items = []
 option = menu
-  
+
 loop do
     clear
     case option
-    when 1 #adciona
-        study_items << register_study_item
-    when 2 #exibe
-        print_item(study_items)
-    when 3 #marca concluído
-        check_done(study_items)   
-    when 4 #Procura item
+    when REGISTER #adciona
+       StudyItem.register
+    when VIEW #exibe
+       StudyItem.print_item
+    when CHECKBOX #marca concluído
+       StudyItem.mark_done   
+    when SEARCH #Procura item
         search_item(study_items)
-    when 5 #Limpa item
+    when DELETE #Limpa item
         delete_item(study_items)
-    when 6 #Sair
+    when EXIT #Sair
         clear
         puts 'Obrigado por usar o Diário de Estudos'  
         break
@@ -151,3 +107,46 @@ loop do
     wait_keypress_and_clear
     option = menu
 end
+
+
+
+#bundle init
+
+
+#gem "sqlite3"
+
+#require sqlite3
+
+#ler json, gravar em json
+
+#um jeito de gravar quando ele fecha
+#ler quando ele carrega
+
+
+
+#pasta bin
+#arquivo setup
+
+
+#require sqlite3
+#  #!/usr/bin/env ruby
+#    puts '===instalando dependencias ==='
+#    system('bundle install')
+
+#db  = SQLite3::Database.new "study_diary.db"
+
+#create table
+#rows = db.execute <<-SQL
+#    create table if not exists study_items (
+#        id integer primary key autoincremente,
+#        tittle text,
+#        category text,       
+    #);
+    #SQL
+
+
+    # bin exetcutavel
+    #chmod +x bin/setup
+
+
+    #def sef.all
