@@ -37,22 +37,6 @@ def menu
     print 'Escolha uma opção: '
     gets.to_i
 end
-  
-
-def search_item(collection)
-    if StudyItem.all.empty?
-        puts 'Nenhum item cadastrado'
-    else
-        puts 'Digite uma palavra para procurar: '
-        term = gets.chomp    
-        found_items = StudyItem.all.filter do |item|
-            item.include?(term)
-        end
-        print_item(found_items)
-    end
-end
-
-
 
 #BUGADO
 def delete_item(collection)
@@ -87,17 +71,17 @@ option = menu
 loop do
     clear
     case option
-    when REGISTER #adciona
+    when REGISTER 
        StudyItem.register
-    when VIEW #exibe
+    when VIEW 
        StudyItem.print_item
-    when CHECKBOX #marca concluído
+    when CHECKBOX 
        StudyItem.mark_done   
-    when SEARCH #Procura item
-        search_item(study_items)
-    when DELETE #Limpa item
-        delete_item(study_items)
-    when EXIT #Sair
+    when SEARCH 
+        StudyItem.search
+    when DELETE 
+        StudyItem.delete
+    when EXIT 
         clear
         puts 'Obrigado por usar o Diário de Estudos'  
         break
@@ -122,12 +106,6 @@ end
 #um jeito de gravar quando ele fecha
 #ler quando ele carrega
 
-
-
-#pasta bin
-#arquivo setup
-
-
 #require sqlite3
 #  #!/usr/bin/env ruby
 #    puts '===instalando dependencias ==='
@@ -147,6 +125,3 @@ end
 
     # bin exetcutavel
     #chmod +x bin/setup
-
-
-    #def sef.all

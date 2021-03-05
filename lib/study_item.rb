@@ -17,10 +17,10 @@ class StudyItem
     end
 
     def self.all_done?
-        done = @@item_collection.map do |item|
+        items_done = @@item_collection.map do |item|
             item.is_done?
         end
-        if done.include? false
+        if items_done.include? false
             false
         else
             true
@@ -50,7 +50,7 @@ class StudyItem
     end
 
     def is_done?
-        if @done == "V"
+        if @done == 'V'
             true
         else
             false
@@ -78,15 +78,53 @@ class StudyItem
         @@item_collection
     end
 
-    def self.print_item
-        @@item_collection.each do |item|
-            if item.done == 'V'
-                puts "#{item.to_s}".green
-            else
-                puts "#{item.to_s}".red
+    def self.print_item(collection: @@item_collection)
+            collection.each do |item|
+                if item.is_done?
+                    puts "#{item.to_s}".green
+                else
+                    puts "#{item.to_s}".red
+                end
             end
-        end
-        puts 'Nenhum item cadastrado' if @@item_collection.empty?
+        puts 'Nenhum item cadastrado' if collection.empty?
     end
+
+    def self.search
+        if StudyItem.all.empty?
+            puts 'Nenhum item cadastrado'
+        else
+            puts 'Digite uma palavra para procurar:'
+            term = gets.chomp
+            found_items =  StudyItem.all.filter do |item|
+                item.include?(term)
+            end
+            StudyItem.print_item(collection:found_items)
+        end
+    end
+
+
+    def self.delete
+        if StudyItem.all.empty?
+            puts 'Nenhum item cadastrado'
+        else
+            puts StudyItem.print_item
+            puts "Qual o ID do item quer deletar?"
+            id = gets.to_i
+            item_index = StudyItem.all.find_index do |item|
+                item.id == id
+            end
+            deleted_item = []
+            deleted_item <<  StudyItem.all[item_index]
+            puts "Item:"
+            StudyItem.print_item(collection:deleted_item)} 
+            puts "deletado"
+            StudyItem.all.delete_at(item_index)
+        end
+    end
+
+
+
+
+
 
 end
